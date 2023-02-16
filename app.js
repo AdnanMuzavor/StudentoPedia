@@ -5,6 +5,7 @@ const app=express();
 
 //Cdotenc to keep some data confidential
 const dotenv=require("dotenv");
+const StudentRouter = require("./routers/StudentRouters");
 dotenv.config();
 
 //We shall be sending data in json format hence 
@@ -18,6 +19,9 @@ conn.connect((error)=>{
     }
     console.log("MySQL database connected");
 })
+
+//Use the StudentRouter to perform all studnet related CRUD operations
+app.use("/api/student",StudentRouter);
 
 const port=process.env.PORT || 5000;
 //Create server using express
