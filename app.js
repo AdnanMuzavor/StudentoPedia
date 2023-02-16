@@ -3,6 +3,10 @@ const conn=require("./connection");
 const express=require("express");
 const app=express();
 
+//Cdotenc to keep some data confidential
+const dotenv=require("dotenv");
+dotenv.config();
+
 //We shall be sending data in json format hence 
 app.use(express.json());
 
@@ -15,7 +19,8 @@ conn.connect((error)=>{
     console.log("MySQL database connected");
 })
 
+const port=process.env.PORT || 5000;
 //Create server using express
-app.listen(4000,()=>{
-    console.log("Listening to port 4000");
+app.listen(port,()=>{
+    console.log(`Listening to port ${port}`);
 })
