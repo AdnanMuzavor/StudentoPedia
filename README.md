@@ -1,11 +1,11 @@
 ### Aims Behind this mini project
 
 ## 1 ) EFFECTIVE ERROR HANDLIMG
-*** 1.1 : Progarmmer Errors ***: 
+***1.1 : Progarmmer Errors***: 
 - Programmer errors for eg logoc or syntax, trying to access property of undefined variables 
 - Can be fixed by editing the source code
 
-*** 1.2 : Operational Errors ***: 
+***1.2 : Operational Errors***: 
 - Error which occurs when an operation has potential to fail for eg **email not found, unauthorized access**.
 - Can be fixed by determining what should be the action/ response when an operation fails
 - They are generally repotred to the client
