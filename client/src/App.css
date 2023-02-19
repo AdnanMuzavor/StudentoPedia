@@ -31,3 +31,43 @@
   border-color:yellow;
 }
 
+/*Home screen designing*/
+.card{
+  border: 2px solid blue !important;
+  border-radius: 0.8rem;
+  background-color: aqua;
+  margin: 0.8rem;
+}
+
+.card:hover{
+  background-color: rgb(41, 144, 255);
+  color: #fff;
+}
+.cardele{
+  border-bottom: 2px dashed red;
+  padding: 0.5rem;
+}
+
+.btnflex{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 0.5rem;
+  padding: 0.5rem;
+}
+
+.btnflex .btn{
+  border: 2px solid red;
+  border-radius: 0.5rem;
+  margin: 0.4rem;
+}
+
+.btnflex .btn:hover{
+  background-color: yellow;
+}
+
+.header{
+margin: 0.5rem;
+padding: 0.5rem;
+color: red;
+}
