@@ -10,12 +10,18 @@
 - Can be fixed by determining what should be the action/ response when an operation fails
 - They are generally repotred to the client
 
+***1.3 : App Errors***:
+- Generally an errors from App it self, for exmaple a function being not defined.
+- We can handle this by creating an AppError class and every time when such possibility occurs
+- we must first check for **undefined** using **if** is so we can throw error of type **AppError**
+- which can then be handled accordingly by checking if ***error instanceof AppError***
+
 **Good Practices: Handling 1.2 Errors**
 ***try-catch***
-- When using asyc function which are liekly to deal promises use a **try-catch** block.
+- When using asyc function which are likely to deal promises use a **try-catch** block.
 - When not used try-catch or Express-async-handler your app will crash definitely and stop responding.
 - An error caught in try-catch will **freeze** response from postman.
-- To avoid this send erro message as response with 404 status
+- To avoid this send erro message as response with 404/400 status
 
 ***Express-Async-Hanbdler***
 - An alternative is to use Express-Async-Handler which prevents your app from **crashing**

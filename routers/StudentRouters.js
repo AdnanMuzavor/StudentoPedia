@@ -5,6 +5,8 @@ const conn = require("../connection"); // Get connetcion
 const uuid = require("uuid"); // to generate uniqueid
 const ErrorHandler = require("../middleware/ErrorHandler");
 const StudentValidation = require("../ValidationSchema/StudentSchema");
+const {INVALID_SUBSCRIPTION} = require("../Constants/ErrorConstants");
+const AppError = require("../AppError");
 
 //Query to add student to a student table
 StudentRouter.post(
@@ -193,6 +195,30 @@ StudentRouter.get("/error2", async (req, res, next) => {
     const user = req.body.user; //Assume user is not FOUND!
     if (!user) {
       throw new Error("User Not Found");
+    }
+    res.status(200).send(user);
+  } catch (e) {
+    console.log("*******************E R R O R********************************");
+    console.log(e);
+    console.log("*******************E R R O R********************************");
+    // => CALL TO ERROR HANDLING MIDDLEWARE
+    return next(e);
+  }
+});
+
+//_________________Demonstrate App Error______________________________
+
+//An _ un _ defined _ function
+const GetSubs = () => undefined;
+
+StudentRouter.get("/error3", async (req, res, next) => {
+  /***********C O D E  ____THAT CAN GO____  W R O N G********** */
+  try {
+    const subs=GetSubs(); //Assume user is not FOUND!
+    if (!subs) {
+      //Since it's app error we throw an instance of app error
+  
+      throw new AppError(INVALID_SUBSCRIPTION,"Subscription not found",400);
     }
     res.status(200).send(user);
   } catch (e) {
