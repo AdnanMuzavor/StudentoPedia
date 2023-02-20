@@ -25,13 +25,15 @@ const RegisterScreen = () => {
 
     //Special handling for Gender
     if (e.target.name === "genderstring") {
-      if (e.target.value === "female") {
+      if (!(e.target.value == "female")) {
+        alert("Making male false and string female")
         setstudentDetails({
           ...studentDetails,
           male: false,
           genderstring: "female",
         });
       } else {
+        alert("Making male true and string male")
         setstudentDetails({
           ...studentDetails,
           male: true,
@@ -42,6 +44,14 @@ const RegisterScreen = () => {
       return;
     }
 
+    //Handling for Address
+    if(e.target.name==="address"){
+      console.log("address changed");
+      const state=e.target.value;
+      setstudentDetails((prev)=>{return {...prev,address:{state:state}}});
+      console.log(studentDetails);
+      return;
+    }
     //For other values
     const value = e.target.value;
     setstudentDetails({ ...studentDetails, [e.target.name]: value });
@@ -102,6 +112,13 @@ const RegisterScreen = () => {
           name="genderstring"
           label="Female"
           value="female"
+          ChangeHandler={ChangeHandler}
+        />
+         <InputField
+          type="text"
+          name="address"
+          label="Enter address"
+          value={studentDetails.address.state}
           ChangeHandler={ChangeHandler}
         />
       </form>
