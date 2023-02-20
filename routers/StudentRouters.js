@@ -91,18 +91,23 @@ StudentRouter.post(
 //Query to get all students
 StudentRouter.get(
   "/",
-  AsyncHandler((req, res) => {
+  AsyncHandler(async(req, res,next) => {
     //const { name, rollno } = req.body;
+    try {
+      const query = `select * from student`;
+      conn.query(query, (error, result) => {
+        if (error) {
+          console.log("FOUND ERROR");
+          return next(error);
+        }
+  
+        res.status(200).send(result);
+      });
+    } catch (e) {
+      console.log("CAUGHT THROWN")
+       next(e);
+    }
 
-    const query = `select * from student`;
-    conn.query(query, (error, result) => {
-      if (error) {
-        console.log("FOUND ERROR");
-        throw new Error(error.message);
-      }
-
-      res.status(200).send(result);
-    });
   })
 );
 

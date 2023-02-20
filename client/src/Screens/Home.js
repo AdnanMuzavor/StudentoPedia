@@ -6,6 +6,7 @@ const HomeScreen = () => {
   // => States
   const [students, setstudents] = useState([]);
   const [loading, setloading] = useState(false);
+  const [error,seterror]=useState(false);
 
   // => Handlers
   const UpdateStudent = (sid) => {
@@ -22,6 +23,7 @@ const HomeScreen = () => {
           return prev.filter((e) => e.sid !== sid);
         });
       } else {
+      
         alert(`Failed to delete: ${sid}`);
       }
     } catch (e) {
@@ -33,13 +35,22 @@ const HomeScreen = () => {
   useEffect(() => {
     const GetStudents = async () => {
       setloading(true);
-      const response = await axios.get("/api/student");
-
-      if (response.data) {
-        setstudents(response.data);
-      } else {
+      seterror(false);
+      try {
+        const response = await axios.get("/api/student");
+        console.log(response);
+        if (response.data) {
+          seterror(false);
+          setstudents(response.data);
+        } else {
+          seterror(true);
+        //  alert("Failed to get data");
+        }
+      } catch (error) {
+        seterror(true);
         alert("Failed to get data");
       }
+   
       setloading(false);
     };
 
@@ -50,7 +61,7 @@ const HomeScreen = () => {
   ) : (
     <>
       <div className="header">
-        <h2 className="text-center">Students Registered</h2>
+        <h2 className="text-center">{error?"Oops could not fetch data":"Students Registered"}</h2>
       </div>
       <div className="row d-flex justify-content-center">
         {students.map((e) => {
