@@ -65,6 +65,14 @@ const RegisterScreen = () => {
   // => For updating an hobby array
   const AddHobbyHandler = (e) => {
     e.preventDefault();
+    console.log(studentDetails)
+    if(studentDetails.hobbies.length==0){
+      setstudentDetails((prev) => {
+        return { ...prev, hobbies: [hobby] };
+      });
+      sethobby("");
+      return;
+    }
     if (
       !studentDetails.hobbies.find(
         (e) => e.toLowerCase() === hobby.toLowerCase()
@@ -140,7 +148,7 @@ const RegisterScreen = () => {
         email: "student@gmail.com",
         password: "123",
         cpassword: "123",
-        phno: "91 9234567890",
+        phno: "1234567890",
         address: {
           state: "Student state",
         },
@@ -152,105 +160,122 @@ const RegisterScreen = () => {
       });
     }
   };
+
+  // remove elemnt from an array
+  const RemoveHobby = (e, hobby) => {
+    e.preventDefault();
+    const newHobbies = studentDetails.hobbies.filter((e) => {
+      return e != hobby;
+    });
+    setstudentDetails((prev) => {
+      return { ...prev, hobbies: newHobbies };
+    });
+  };
   return (
     <>
-      <div className="header">
-        <h2 className="text-center">Register</h2>
-      </div>
-      <div className="errorsection">
-        {errors.length >= 1
-          ? errors.map((e) => {
-              return (
-                <>
-                  <h6 key={Math.random()}>{e.message}</h6>
-                </>
-              );
-            })
-          : "No errors as of now"}
-      </div>
-      <form action="#" method="POST" onSubmit={(e) => SubmitHandler(e)}>
-        <InputField
-          type="text"
-          name="name"
-          value={studentDetails.name}
-          ChangeHandler={ChangeHandler}
-        />
-        <InputField
-          type="email"
-          name="email"
-          value={studentDetails.email}
-          ChangeHandler={ChangeHandler}
-        />
-        <InputField
-          type="password"
-          name="password"
-          value={studentDetails.password}
-          ChangeHandler={ChangeHandler}
-        />
-        <InputField
-          type="password"
-          name="cpassword"
-          value={studentDetails.cpassword}
-          ChangeHandler={ChangeHandler}
-        />
-        <InputField
-          type="number"
-          name="phno"
-          value={studentDetails.phno}
-          ChangeHandler={ChangeHandler}
-        />
-        <InputField
-          type="date"
-          name="doa"
-          label="Date Of Admission"
-          value={studentDetails.doa}
-          ChangeHandler={ChangeHandler}
-        />
-        <InputField
-          type="radio"
-          name="genderstring"
-          label="Male"
-          value="male"
-          ChangeHandler={ChangeHandler}
-        />
-        <InputField
-          type="radio"
-          name="genderstring"
-          label="Female"
-          value="female"
-          ChangeHandler={ChangeHandler}
-        />
-        <InputField
-          type="text"
-          name="address"
-          label="Enter address"
-          value={studentDetails.address.state}
-          ChangeHandler={ChangeHandler}
-        />
-
-        <div className="hobbietaker">
-          <div className="hobbies">
-            {studentDetails.hobbies.map((e, i) => {
-              return (
-                <>
-                  <div className="hobby" key={i}>
-                    {e}
-                  </div>
-                </>
-              );
-            })}
-          </div>
-          <input
-            type="text"
-            name="hobbie"
-            onChange={(e) => sethobby(e.target.value)}
-            value={hobby}
-          />
-          <button onClick={(e) => AddHobbyHandler(e)}>Add hobby</button>
+      <div className="mainwrap">
+        <div className="header">
+          <h2 className="text-center">Register</h2>
         </div>
+        <div className="errorsection">
+          {errors.length >= 1
+            ? errors.map((e) => {
+                return (
+                  <>
+                    <h6 key={Math.random()}>{e.message}</h6>
+                  </>
+                );
+              })
+            : "No errors as of now"}
+        </div>
+        <form action="#" method="POST" onSubmit={(e) => SubmitHandler(e)}>
+          <InputField
+            type="text"
+            name="name"
+            value={studentDetails.name}
+            ChangeHandler={ChangeHandler}
+          />
+          <InputField
+            type="email"
+            name="email"
+            value={studentDetails.email}
+            ChangeHandler={ChangeHandler}
+          />
+          <InputField
+            type="password"
+            name="password"
+            value={studentDetails.password}
+            ChangeHandler={ChangeHandler}
+          />
+          <InputField
+            type="password"
+            name="cpassword"
+            value={studentDetails.cpassword}
+            ChangeHandler={ChangeHandler}
+          />
+          <InputField
+            type="number"
+            name="phno"
+            value={studentDetails.phno}
+            ChangeHandler={ChangeHandler}
+          />
+          <InputField
+            type="date"
+            name="doa"
+            label="Date Of Admission"
+            value={studentDetails.doa}
+            ChangeHandler={ChangeHandler}
+          />
+          <InputField
+            type="radio"
+            name="genderstring"
+            label="Male"
+            value="male"
+            selected={true}
+            ChangeHandler={ChangeHandler}
+          />
+          <InputField
+            type="radio"
+            name="genderstring"
+            label="Female"
+            value="female"
+            ChangeHandler={ChangeHandler}
+          />
+          <InputField
+            type="text"
+            name="address"
+            label="Enter address"
+            value={studentDetails.address.state}
+            ChangeHandler={ChangeHandler}
+          />
 
-        <input type="submit" value="Register" />
-      </form>
+          <div className="hobbietaker">
+            <div className="hobbies">
+              {studentDetails.hobbies.length>=1? studentDetails.hobbies.map((e, i) => {
+                return (
+                  <>
+                    <div className="hobby" key={i}>
+                      {e}
+                      <button onClick={(ev) => RemoveHobby(ev, e)}>X</button>
+                    </div>
+                  </>
+                );
+              }):"No hobbies selected"}
+            </div>
+            <div className="ipwrapper">
+              <input
+                type="text"
+                name="hobbie"
+                onChange={(e) => sethobby(e.target.value)}
+                value={hobby}
+              />
+              <button onClick={(e) => AddHobbyHandler(e)}>Add hobby</button>
+            </div>
+          </div>
+
+          <input type="submit" value="Register" />
+        </form>
+      </div>
     </>
   );
 };
