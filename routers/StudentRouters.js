@@ -15,6 +15,8 @@ StudentRouter.post(
     try {
       var failed = false;
       // => Get the req.body
+      console.log("REQ: ");
+      console.log(req.body);
       const {
         name,
         email,

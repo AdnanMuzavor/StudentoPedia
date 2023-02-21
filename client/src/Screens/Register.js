@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import InputField from "../Components/InputFeild";
+import axios from "axios";
 
 const RegisterScreen = () => {
   // state
+  const [hobby, sethobby] = useState("");
+  const [errors, seterrors] = useState("");
   const [studentDetails, setstudentDetails] = useState({
     name: "Aduji",
     email: "123ad82@gmail.com",
@@ -26,14 +29,12 @@ const RegisterScreen = () => {
     //Special handling for Gender
     if (e.target.name === "genderstring") {
       if (!(e.target.value == "female")) {
-        alert("Making male false and string female")
         setstudentDetails({
           ...studentDetails,
           male: false,
           genderstring: "female",
         });
       } else {
-        alert("Making male true and string male")
         setstudentDetails({
           ...studentDetails,
           male: true,
@@ -45,24 +46,129 @@ const RegisterScreen = () => {
     }
 
     //Handling for Address
-    if(e.target.name==="address"){
+    if (e.target.name === "address") {
       console.log("address changed");
-      const state=e.target.value;
-      setstudentDetails((prev)=>{return {...prev,address:{state:state}}});
+      const state = e.target.value;
+      setstudentDetails((prev) => {
+        return { ...prev, address: { state: state } };
+      });
       console.log(studentDetails);
       return;
     }
+
     //For other values
     const value = e.target.value;
     setstudentDetails({ ...studentDetails, [e.target.name]: value });
     console.log(studentDetails);
+  };
+
+  // => For updating an hobby array
+  const AddHobbyHandler = (e) => {
+    e.preventDefault();
+    if (
+      !studentDetails.hobbies.find(
+        (e) => e.toLowerCase() === hobby.toLowerCase()
+      )
+    ) {
+      const hobbies1 = [...studentDetails.hobbies, hobby];
+      setstudentDetails((prev) => {
+        return { ...prev, hobbies: hobbies1 };
+      });
+      sethobby("");
+      console.log(studentDetails);
+    } else {
+      alert("Cannot add same hobby");
+    }
+  };
+
+  // => Submit handler to submit data to server
+  const SubmitHandler = async (e) => {
+    e.preventDefault();
+    // seterrors([]);
+
+    //___DRAWBACK: DIFFICULT TO EXTRACT ERROR MESSAGE FROM AXIOS RESPONSE___
+    //var response;
+    // try {
+    //   response = await axios.post(
+    //     "/api/student/register",
+    //     { ...studentDetails },
+    //     {
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //       },
+    //     }
+    //   );
+    //    console.log(response);
+    //   if(!response.ok){
+    //     const errormsg=await response.statusText();
+    //   }
+    // } catch (e) {
+    //   console.log(e);
+    //   console.log(response);
+    //   alert("Could Not Submit the Data.")
+    // }
+
+    const res = await fetch("/api/student/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(studentDetails),
+    });
+    console.log(res);
+
+    //__________if unknown error occurs__________
+    if (res.status === 500) {
+      alert("Something went wrong");
+      return;
+    }
+
+    //__________Validation error occurs__________
+    if (res.status === 400) {
+      const errorText = await res.text();
+      const errorMssgs = JSON.parse(errorText);
+      seterrors(errorMssgs.Details);
+      return;
+    }
+
+    //_______No error occurs_____________
+    if (res.status === 200) {
+      alert("Student registered");
+      seterrors([]);
+      setstudentDetails({
+        name: "Student Name",
+        email: "student@gmail.com",
+        password: "123",
+        cpassword: "123",
+        phno: "91 9234567890",
+        address: {
+          state: "Student state",
+        },
+        doa: "2015-10-01",
+        male: true,
+        genderstring: "male",
+        hobbies: ["Swim", "Running"],
+        stillStudent: true,
+      });
+    }
   };
   return (
     <>
       <div className="header">
         <h2 className="text-center">Register</h2>
       </div>
-      <form action="#" method="POST">
+      <div className="errorsection">
+        {errors.length >= 1
+          ? errors.map((e) => {
+              return (
+                <>
+                  <h6 key={Math.random()}>{e.message}</h6>
+                </>
+              );
+            })
+          : "No errors as of now"}
+      </div>
+      <form action="#" method="POST" onSubmit={(e) => SubmitHandler(e)}>
         <InputField
           type="text"
           name="name"
@@ -114,13 +220,36 @@ const RegisterScreen = () => {
           value="female"
           ChangeHandler={ChangeHandler}
         />
-         <InputField
+        <InputField
           type="text"
           name="address"
           label="Enter address"
           value={studentDetails.address.state}
           ChangeHandler={ChangeHandler}
         />
+
+        <div className="hobbietaker">
+          <div className="hobbies">
+            {studentDetails.hobbies.map((e, i) => {
+              return (
+                <>
+                  <div className="hobby" key={i}>
+                    {e}
+                  </div>
+                </>
+              );
+            })}
+          </div>
+          <input
+            type="text"
+            name="hobbie"
+            onChange={(e) => sethobby(e.target.value)}
+            value={hobby}
+          />
+          <button onClick={(e) => AddHobbyHandler(e)}>Add hobby</button>
+        </div>
+
+        <input type="submit" value="Register" />
       </form>
     </>
   );
