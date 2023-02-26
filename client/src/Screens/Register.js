@@ -6,6 +6,8 @@ const RegisterScreen = (props) => {
   // state
   const [hobby, sethobby] = useState("");
   const [errors, seterrors] = useState("");
+  const [update, setupdate] = useState(false);
+  const [updatesid, setupdatesid] = useState(-1);
   const [studentDetails, setstudentDetails] = useState({
     name: "Aduji",
     email: "123ad82@gmail.com",
@@ -65,8 +67,8 @@ const RegisterScreen = (props) => {
   // => For updating an hobby array
   const AddHobbyHandler = (e) => {
     e.preventDefault();
-    console.log(studentDetails)
-    if(studentDetails.hobbies.length==0){
+    console.log(studentDetails);
+    if (studentDetails.hobbies.length == 0) {
       setstudentDetails((prev) => {
         return { ...prev, hobbies: [hobby] };
       });
@@ -115,7 +117,37 @@ const RegisterScreen = (props) => {
     //   console.log(response);
     //   alert("Could Not Submit the Data.")
     // }
-
+    if (update === true) {
+      const res = await fetch(`/api/student/update${updatesid}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(studentDetails),
+      });
+      console.log(res);
+      //_______No error occurs_____________
+      if (res.status === 200) {
+        alert("Student details updated");
+        seterrors([]);
+        setstudentDetails({
+          name: "Student Name",
+          email: "student@gmail.com",
+          password: "123",
+          cpassword: "123",
+          phno: "1234567890",
+          address: {
+            state: "Student state",
+          },
+          doa: "2015-10-01",
+          male: true,
+          genderstring: "male",
+          hobbies: ["Swim", "Running"],
+          stillStudent: true,
+        });
+      }
+      return;
+    }
     const res = await fetch("/api/student/register", {
       method: "POST",
       headers: {
@@ -175,16 +207,42 @@ const RegisterScreen = (props) => {
   //To know if it's update or new register
   // __________________O P T I M I S A T I O N______________________________
   //  ========> We are using same screen fro update and delete <===========
-  const FetchDetails=async()=>{
-      try {
-         const {data}=await axios.get("")
-      } catch (e) {
-         console.log(e);
+  const FetchDetails = async (sid) => {
+    try {
+      setupdate(true);
+      setupdatesid(sid);
+      alert(`fetching for ${sid}`);
+      const { data } = await axios.get(`/api/student/${sid}`);
+      if (data[0]) {
+        
+
+        //Set / initialise the student details
+
+        var newStudent = {
+          ...data["0"],
+          hobbies: data["hobbies"],
+          address: { state: data[0].address },
+          doa: data[0].doa.split("T")[0],
+          stillStudent: true,
+          genderstring: data[0].gender,
+          male: data[0].gender === "male" ? true : false,
+        };
+
+        delete newStudent.sid;
+        delete newStudent.gender;
+      
+        setstudentDetails(newStudent);
+        seterrors([]);
+      } else {
+        alert(`Could not fetch data of ${sid}`);
       }
-  }
-  useEffect(()=>{
-    
-  },[])
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  useEffect(() => {
+    FetchDetails(props.match.params.id);
+  }, []);
   return (
     <>
       <div className="mainwrap">
@@ -265,16 +323,20 @@ const RegisterScreen = (props) => {
 
           <div className="hobbietaker">
             <div className="hobbies">
-              {studentDetails.hobbies.length>=1? studentDetails.hobbies.map((e, i) => {
-                return (
-                  <>
-                    <div className="hobby" key={i}>
-                      {e}
-                      <button onClick={(ev) => RemoveHobby(ev, e)}>X</button>
-                    </div>
-                  </>
-                );
-              }):"No hobbies selected"}
+              {studentDetails.hobbies.length >= 1
+                ? studentDetails.hobbies.map((e, i) => {
+                    return (
+                      <>
+                        <div className="hobby" key={i}>
+                          {e}
+                          <button onClick={(ev) => RemoveHobby(ev, e)}>
+                            X
+                          </button>
+                        </div>
+                      </>
+                    );
+                  })
+                : "No hobbies selected"}
             </div>
             <div className="ipwrapper">
               <input
@@ -287,7 +349,7 @@ const RegisterScreen = (props) => {
             </div>
           </div>
 
-          <input type="submit" value="Register" />
+          <input type="submit" value={update ? "Update" : "Register"} />
         </form>
       </div>
     </>

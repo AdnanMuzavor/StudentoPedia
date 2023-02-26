@@ -102,7 +102,7 @@ StudentRouter.get(
           console.log("FOUND ERROR");
           return next(error);
         }
-
+        
         res.status(200).send(result);
       });
     } catch (e) {
@@ -116,6 +116,7 @@ StudentRouter.get(
   "/:id",
   AsyncHandler((req, res, next) => {
     try {
+      console.log("IIINNNNN")
       const sid = req.params.id;
       conn.query(
         "select * from student where sid=?",
@@ -126,7 +127,23 @@ StudentRouter.get(
 
             return next(error);
           }
-          return res.status(200).send(result);
+          conn.query("select * from hobbies where sid=?",[sid],(err,hobbies)=>{
+            if(err){
+              console.log("COULD NOT FETCH HOBBY");
+              return next(err);
+            }
+            console.log(hobbies);
+            var hobbies_list=[];
+            hobbies.forEach((e)=>{
+              hobbies_list.push(e.hobby);
+            })
+            // console.log(hobbies_list);
+            // var newobj=result;
+            // newobj["hobbies"]=hobbies_list;
+            // console.log(newobj)
+            return res.status(200).send({...result,hobbies:hobbies_list});
+          })
+          
         }
       );
     } catch (e) {
