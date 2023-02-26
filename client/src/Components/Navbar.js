@@ -11,7 +11,7 @@ const Navbar=()=>{
              </Link>
         </div>
         <div className="navcomp">
-             <Link to="/register" className='link'>
+             <Link to="/register/-1" className='link'>
                 Register student
              </Link>
         </div>

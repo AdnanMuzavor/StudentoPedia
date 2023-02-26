@@ -5,7 +5,7 @@ const conn = require("../connection"); // Get connetcion
 const uuid = require("uuid"); // to generate uniqueid
 const ErrorHandler = require("../middleware/ErrorHandler");
 const StudentValidation = require("../ValidationSchema/StudentSchema");
-const {INVALID_SUBSCRIPTION} = require("../Constants/ErrorConstants");
+const { INVALID_SUBSCRIPTION } = require("../Constants/ErrorConstants");
 const AppError = require("../AppError");
 
 //Query to add student to a student table
@@ -93,7 +93,7 @@ StudentRouter.post(
 //Query to get all students
 StudentRouter.get(
   "/",
-  AsyncHandler(async(req, res,next) => {
+  AsyncHandler(async (req, res, next) => {
     //const { name, rollno } = req.body;
     try {
       const query = `select * from student`;
@@ -102,14 +102,36 @@ StudentRouter.get(
           console.log("FOUND ERROR");
           return next(error);
         }
-  
+
         res.status(200).send(result);
       });
     } catch (e) {
-      console.log("CAUGHT THROWN")
-       next(e);
+      console.log("CAUGHT THROWN");
+      next(e);
     }
+  })
+);
+//Query to get particular student
+StudentRouter.get(
+  "/:id",
+  AsyncHandler((req, res, next) => {
+    try {
+      const sid = req.params.id;
+      conn.query(
+        "select * from student where sid=?",
+        [sid],
+        (error, result) => {
+          if (error) {
+            console.log("Found Error");
 
+            return next(error);
+          }
+          return res.status(200).send(result);
+        }
+      );
+    } catch (e) {
+      next(e);
+    }
   })
 );
 
@@ -221,11 +243,11 @@ const GetSubs = () => undefined;
 StudentRouter.get("/error3", async (req, res, next) => {
   /***********C O D E  ____THAT CAN GO____  W R O N G********** */
   try {
-    const subs=GetSubs(); //Assume user is not FOUND!
+    const subs = GetSubs(); //Assume user is not FOUND!
     if (!subs) {
       //Since it's app error we throw an instance of app error
-  
-      throw new AppError(INVALID_SUBSCRIPTION,"Subscription not found",400);
+
+      throw new AppError(INVALID_SUBSCRIPTION, "Subscription not found", 400);
     }
     res.status(200).send(user);
   } catch (e) {

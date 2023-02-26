@@ -1,5 +1,5 @@
 import React from "react";
-
+import { Link } from "react-router-dom";
 const StudentCard = ({ sid, name, email, UpdateHandler, DeleteHandler }) => {
   return (
     <>
@@ -7,12 +7,12 @@ const StudentCard = ({ sid, name, email, UpdateHandler, DeleteHandler }) => {
         <div className="cardele">{name}</div>
         <div className="cardele">{email}</div>
         <div className="btns row btnflex">
-          <button
-            onClick={() => UpdateHandler(sid)}
+          <Link
+            to={`/register/${sid}`}
             className="btn col-md-5 col-lg-5 col-10"
           >
             Update
-          </button>
+          </Link>
           <button
             onClick={() => DeleteHandler(sid)}
             className="btn col-md-5 col-lg-5 col-10"

@@ -13,8 +13,8 @@ const Routing = () => {
         path="/getstudent/:id"
         render={(props) => <StudentScreen {...props} />}
       />
-      <Route path="/register">
-        <RegisterScreen />
+      <Route path="/register/:id" render={(props)=> <RegisterScreen {...props}/>}>
+       
       </Route>
     </>
   );

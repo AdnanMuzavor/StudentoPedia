@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import InputField from "../Components/InputFeild";
 import axios from "axios";
 
-const RegisterScreen = () => {
+const RegisterScreen = (props) => {
   // state
   const [hobby, sethobby] = useState("");
   const [errors, seterrors] = useState("");
@@ -171,6 +171,20 @@ const RegisterScreen = () => {
       return { ...prev, hobbies: newHobbies };
     });
   };
+
+  //To know if it's update or new register
+  // __________________O P T I M I S A T I O N______________________________
+  //  ========> We are using same screen fro update and delete <===========
+  const FetchDetails=async()=>{
+      try {
+         const {data}=await axios.get("")
+      } catch (e) {
+         console.log(e);
+      }
+  }
+  useEffect(()=>{
+    
+  },[])
   return (
     <>
       <div className="mainwrap">
